@@ -22,11 +22,17 @@ def test_that_series_can_be_compacted(values, expected):
     assert np.allclose(expected, output)
 
 
-@pytest.mark.parametrize("values", [[1], [0, 1, 2],])
-def test_that_odd_series_cant_be_compacted(values):
-    values = np.array(values)
-
+@pytest.mark.parametrize("max_size", [0, 1, 3])
+def test_that_compacting_series_checks_for_max_size_constraints(max_size):
     with pytest.raises(ValueError) as error:
-        sparcli.data.compact(values)
+        sparcli.data.CompactingSeries([], max_size)
+    assert "multiple of 2" in str(error.value).lower()
 
-    assert "can't compact" in str(error.value).lower()
+
+@pytest.mark.parametrize(
+    "values,expected", [([], [4]), ([1, 2, 3], [1.5, 3.5]),],
+)
+def test_that_series_automatically_compacts_when_it_reaches_capacity(values, expected):
+    series = sparcli.data.CompactingSeries(values, 4)
+    series.append(4)
+    assert np.allclose(expected, series.values)

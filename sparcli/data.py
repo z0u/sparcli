@@ -12,6 +12,18 @@ def normalize(series: np.ndarray) -> np.ndarray:
 
 
 def compact(values: np.ndarray) -> np.ndarray:
-    if values.size % 2 != 0:
-        raise ValueError("Can't compact a series with an odd length.")
     return np.stack([values[1::2], values[:-1:2]]).mean(axis=0)
+
+
+class CompactingSeries:
+    def __init__(self, values, max_size):
+        self.values = np.array(values, dtype=float)
+        if max_size < 2 or max_size % 2 != 0:
+            raise ValueError("max_size must be a multiple of 2")
+        self.max_size = max_size
+
+    def append(self, value):
+        values = np.append(self.values, value)
+        if values.size == self.max_size:
+            values = compact(values)
+        self.values = values
