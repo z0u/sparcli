@@ -17,6 +17,7 @@ keywords = ["console", "sparkline", "data", "visualization"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
+numpy = "^1.18.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.3.5"

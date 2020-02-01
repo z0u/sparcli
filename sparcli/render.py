@@ -1,13 +1,13 @@
-from .data import Series
+import numpy as np
 
 
-COLUMNS = " ▁▂▃▄▅▆▇█"
+COLUMNS = np.array([c for c in "▁▂▃▄▅▆▇█"])
 
 
-def render_as_verical_bars(normalized_series: Series) -> str:
-    indices = [
-        int(max(0, min(x * 8, 8))) if x is not None else None
-        for x in normalized_series]
-    return "".join(
-        COLUMNS[i] if i is not None else "."
-        for i in indices)
+def render_as_verical_bars(normalized_series: np.ndarray) -> str:
+    indices = (
+        (normalized_series * len(COLUMNS))
+        .astype(int)
+        .clip(0, len(COLUMNS))
+    )
+    return "".join(COLUMNS[indices])
