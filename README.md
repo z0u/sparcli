@@ -4,5 +4,7 @@ Use this library to see the shape of data during execution of data pipelines and
 
 
 ```
-poetry run pytest
+pip install --user pymake poetry
+pymake lint
+pymake test
 ```

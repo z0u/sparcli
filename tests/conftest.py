@@ -8,6 +8,6 @@ def pytest_runtestloop(session):
 
 
 def disable_coverage_when_not_all_tests_were_run(config):
-    plugin = config.pluginmanager.getplugin('_cov')
+    plugin = config.pluginmanager.getplugin("_cov")
     if plugin and (config.option.keyword or config.option.file_or_dir):
         plugin.cov_total = None
