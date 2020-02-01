@@ -9,6 +9,6 @@ import sparcli.render
     ([], ""),
 ])
 def test_that_normalized_series_renders_as_vertical_bars(values, expected):
-    series = np.array(values) / 8
-    output = sparcli.render.render_as_verical_bars(series)
+    values = np.array(values) / 8
+    output = sparcli.render.render_as_verical_bars(values)
     assert expected == output
