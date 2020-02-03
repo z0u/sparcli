@@ -16,7 +16,7 @@ def compact(values: np.ndarray) -> np.ndarray:
 
 
 class CompactingSeries:
-    def __init__(self, values, max_size):
+    def __init__(self, values, max_size: int):
         self.values = np.array(values, dtype=float)
         if max_size < 2 or max_size % 2 != 0:
             raise ValueError("max_size must be a multiple of 2")
@@ -27,3 +27,14 @@ class CompactingSeries:
         if values.size == self.max_size:
             values = compact(values)
         self.values = values
+
+
+class StableBucket:
+    def __init__(self, mean: float = 0.0, size: int = 0):
+        self.mean = mean
+        self.size = size
+
+    def add(self, value):
+        size = self.size + 1
+        self.mean = self.mean + (value - self.mean) / size
+        self.size = size

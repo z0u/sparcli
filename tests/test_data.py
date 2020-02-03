@@ -36,3 +36,16 @@ def test_that_series_automatically_compacts_when_it_reaches_capacity(values, exp
     series = sparcli.data.CompactingSeries(values, 4)
     series.append(4)
     assert np.allclose(expected, series.values)
+
+
+@pytest.mark.parametrize(
+    "values,expected", [([1, 2, 3], 2.0), (range(1, int(1e6)), 5e5),],
+)
+def test_that_mean_calculation_is_reasonably_stable(values, expected):
+    values = (float(x) for x in values)
+    bucket = sparcli.data.StableBucket()
+
+    for value in values:
+        bucket.add(value)
+
+    assert expected == bucket.mean
