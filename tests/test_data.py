@@ -25,21 +25,37 @@ def test_that_series_can_be_compacted(values, expected):
 @pytest.mark.parametrize("max_size", [0, 1, 3])
 def test_that_compacting_series_checks_for_max_size_constraints(max_size):
     with pytest.raises(ValueError) as error:
-        sparcli.data.CompactingSeries([], max_size)
+        sparcli.data.CompactingSeries(max_size)
     assert "multiple of 2" in str(error.value).lower()
 
 
 @pytest.mark.parametrize(
-    "values,expected", [([], [4]), ([1, 2, 3], [1.5, 3.5]),],
+    "values,expected,scale", [([1], [1], 1), ([1, 2, 3, 4], [1.5, 3.5], 2),],
 )
-def test_that_series_automatically_compacts_when_it_reaches_capacity(values, expected):
-    series = sparcli.data.CompactingSeries(values, 4)
-    series.append(4)
+def test_that_series_automatically_compacts_when_it_reaches_capacity(
+    values, expected, scale
+):
+    series = sparcli.data.CompactingSeries(4)
+
+    series.add_all(values)
+
+    assert scale == series.scale
     assert np.allclose(expected, series.values)
 
 
+def test_that_final_bucket_value_is_included_in_values():
+    series = sparcli.data.CompactingSeries(4)
+    series.add_all([1, 2, 3, 4, 5])
+
+    values = series.values
+
+    assert series._values.size == 2
+    assert series.final_bucket.mean == 5
+    assert np.allclose([1.5, 3.5, 5], values)
+
+
 @pytest.mark.parametrize(
-    "values,expected", [([1, 2, 3], 2.0), (range(1, int(1e6)), 5e5),],
+    "values,expected", [([1, 2, 3], 2.0), (range(1, 1000000), 500000),],
 )
 def test_that_mean_calculation_is_reasonably_stable(values, expected):
     values = (float(x) for x in values)
