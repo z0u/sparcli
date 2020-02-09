@@ -12,7 +12,7 @@ def run():
     try:
         demo()
     except KeyboardInterrupt:
-        print("Exiting demo")
+        pass
 
 
 def demo():

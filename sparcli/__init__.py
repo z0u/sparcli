@@ -1,5 +1,6 @@
 import atexit
 
+from . import render
 from . import services
 
 
@@ -10,7 +11,7 @@ def get_controller():
     global _controller
     if not _controller:
         atexit.register(cleanup)
-        renderer = services.Renderer()
+        renderer = render.Renderer()
         _controller = services.Controller(renderer)
         _controller.start()
     return _controller

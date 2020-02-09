@@ -80,7 +80,7 @@ class Controller(threading.Thread):
             elif topic == "producer_stopped":
                 self.producer_stopped(*data)
             elif topic == "stopped":
-                self.renderer.draw(self.variables)
+                self.renderer.clear()
                 break
             else:
                 raise ValueError(f"Unknown event {topic}")
@@ -104,18 +104,3 @@ class Controller(threading.Thread):
             for name, variable in self.variables.items()
             if variable.is_live
         }
-
-
-class Renderer:
-    def __init__(self):
-        self.height = 0
-
-    def draw(self, variables):
-        self.clear()
-        for name, variable in variables.items():
-            print(name, render.render_as_verical_bars(variable.series.values))
-        self.height = len(variables)
-
-    def clear(self):
-        sys.stdout.write("\x1b[1A\x1b[2K" * self.height)
-        self.height = 0
