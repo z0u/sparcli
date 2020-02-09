@@ -13,7 +13,6 @@ def get_controller():
     global _controller
     with _controller_lock:
         if not _controller:
-            print("getting new controller")
             atexit.register(cleanup)
             renderer = render.Renderer()
             _controller = services.Controller(renderer)

@@ -96,8 +96,8 @@ class Controller(threading.Thread):
         self.garbage_collect()
 
     def garbage_collect(self):
-        self.variables = {
+        self.variables = defaultdict(Variable, {
             name: variable
             for name, variable in self.variables.items()
             if variable.is_live
-        }
+        })
