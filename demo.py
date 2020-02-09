@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from itertools import count
 import math
 import random
 import time
@@ -16,9 +17,16 @@ def run():
 
 def demo():
     with sparcli.sparcli() as s:
-        for x in take(random.random):
-            s.record(random=x)
+        randoms = take(random.random)
+        sine = sinewave()
+        for x1, x2 in zip(randoms, sine):
+            s.record(random=x1, sine=x2)
             time.sleep(0.1)
+
+
+def sinewave():
+    for x in count():
+        yield np.sin(x / 10)
 
 
 def take(callable):
