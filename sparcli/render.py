@@ -19,9 +19,12 @@ class Renderer:
 
     def draw(self, variables):
         self.clear()
+        name_width = max((len(name) for name in variables), default=0)
         for name, variable in variables.items():
             values = normalize(variable.series.values)
-            print(name, render_as_verical_bars(values))
+            name = name.rjust(name_width)
+            bars = render_as_verical_bars(values)
+            print(f"{name} {bars}")
         self.height = len(variables)
 
     def clear(self):

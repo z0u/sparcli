@@ -1,12 +1,9 @@
 from collections import defaultdict
 from contextlib import AbstractContextManager
 import queue
-import sys
 import threading
-import time
 
 from . import data
-from . import render
 
 
 try:
