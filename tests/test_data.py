@@ -5,7 +5,7 @@ import sparcli.data
 
 
 @pytest.mark.parametrize(
-    "values,expected", [([], []), ([0], [0]), ([1, 2, 3], [0, 0.5, 1]),]
+    "values,expected", [([], []), ([0], [0]), ([-1, 0, 1], [0, 0.5, 1]),]
 )
 def test_that_data_can_be_normalized(values, expected):
     values = np.array(values)

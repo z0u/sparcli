@@ -1,8 +1,9 @@
 import atexit
 import threading
 
-from . import render
-from . import services
+import sparcli.render
+import sparcli.context
+import sparcli.controller
 
 
 _controller = None
@@ -14,8 +15,8 @@ def get_controller():
     with _controller_lock:
         if not _controller:
             atexit.register(cleanup)
-            renderer = render.Renderer()
-            _controller = services.Controller(renderer)
+            renderer = sparcli.render.Renderer()
+            _controller = sparcli.controller.Controller(renderer)
             _controller.start()
     return _controller
 
@@ -29,12 +30,13 @@ def cleanup():
             _controller = None
 
 
-def context():
-    return services.Sparcli(get_controller().event_queue)
+def ctx():
+    controller = get_controller()
+    return sparcli.context.SparcliContext(controller.event_queue)
 
 
 def gen(iterable, name):
-    with context() as ctx:
+    with ctx() as context:
         for value in iterable:
-            ctx.record(**{name: value})
+            context.record(**{name: value})
             yield value

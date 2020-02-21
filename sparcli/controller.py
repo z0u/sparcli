@@ -1,53 +1,14 @@
 from collections import defaultdict
-from contextlib import AbstractContextManager
 import queue
 import threading
 
-from . import data
+import sparcli.data
 
 
 try:
     Queue = queue.SimpleQueue
 except AttributeError:
     Queue = queue.Queue
-
-
-class Sparcli(AbstractContextManager):
-    def __init__(self, event_queue):
-        self.emit = event_queue.put
-
-    def record(self, **variables):
-        self.emit(("data_produced", self, variables))
-
-    def register(self):
-        pass
-
-    def unregister(self):
-        self.emit(("producer_stopped", self))
-
-    def __enter__(self):
-        self.register()
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        del exc_type, exc_value, traceback
-        self.unregister()
-
-
-class Variable:
-    def __init__(self):
-        self.references = set()
-        self.series = data.CompactingSeries(30)
-
-    @property
-    def is_live(self):
-        return len(self.references) > 0
-
-    def reference(self, reference):
-        self.references.add(reference)
-
-    def dereference(self, reference):
-        self.references.discard(reference)
 
 
 class Controller(threading.Thread):
@@ -101,3 +62,19 @@ class Controller(threading.Thread):
             for name, variable in self.variables.items()
             if variable.is_live
         })
+
+
+class Variable:
+    def __init__(self):
+        self.references = set()
+        self.series = sparcli.data.CompactingSeries(30)
+
+    @property
+    def is_live(self):
+        return len(self.references) > 0
+
+    def reference(self, reference):
+        self.references.add(reference)
+
+    def dereference(self, reference):
+        self.references.discard(reference)

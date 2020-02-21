@@ -39,9 +39,9 @@ def stop_producers(jobs):
 
 
 def using_context_manager():
-    with sparcli.context() as ctx:
+    with sparcli.ctx() as context:
         while running:
-            ctx.record(random=random.random())
+            context.record(random=random.random())
             time.sleep(0.1)
 
 
