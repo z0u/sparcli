@@ -77,3 +77,17 @@ def test_that_data_is_written_to_variables(mocker, queue, renderer):
 
     assert variable.references == {producer}
     variable.series.add.assert_called_once_with(2)
+
+
+def test_that_old_references_are_cleaned_up(mocker, queue, renderer):
+    producer = mocker.Mock()
+    controller = sparcli.controller.Controller(renderer)
+    mocker.patch("sparcli.data.CompactingSeries")
+    variable = sparcli.controller.Variable()
+    variable.reference(producer)
+    controller.variables["x"] = variable
+
+    controller.producer_stopped(producer)
+
+    assert not variable.references
+    assert not controller.variables
