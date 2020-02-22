@@ -15,11 +15,12 @@ def disable_coverage_when_not_all_tests_were_run(config):
 
 @pytest.fixture
 def effector():
-    '''
+    """
     Creates a function that returns the next item from a sequence each time it
     is called. If the item is an exception, it will be raised. For use with
     Mock.side_effect to simulate a mixture of successful calls and exceptions.
-    '''
+    """
+
     def effector_(sequence):
         iterator = iter(sequence)
 
