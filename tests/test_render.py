@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 import pytest
 
@@ -9,5 +11,19 @@ import sparcli.render
 )
 def test_that_normalized_series_renders_as_vertical_bars(values, expected):
     values = np.array(values) / 7
-    output = sparcli.render.render_as_verical_bars(values)
+    output = sparcli.render.render_as_vertical_bars(values)
     assert expected == output
+
+
+def test_that_renderer_draws_variables(mocker):
+    render = mocker.patch("sparcli.render.render_as_vertical_bars", autospec=True)
+    data = mocker.patch("sparcli.data", autospec=True)
+    renderer = sparcli.render.Renderer()
+    renderer.write = mocker.MagicMock(sys.stdout.write)
+    variables = {"a": mocker.MagicMock(), "b": mocker.MagicMock()}
+
+    renderer.draw(variables)
+
+    assert render.called
+    assert renderer.write.called
+    assert renderer.height == len(variables)

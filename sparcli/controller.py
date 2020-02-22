@@ -5,16 +5,13 @@ import threading
 import sparcli.data
 
 
-try:
-    Queue = queue.SimpleQueue
-except AttributeError:
-    Queue = queue.Queue
-
-
 class Controller(threading.Thread):
     def __init__(self, renderer):
         super().__init__(daemon=True)
-        self.event_queue = Queue()
+        try:
+            self.event_queue = queue.SimpleQueue()
+        except AttributeError:
+            self.event_queue = queue.Queue()
         self.renderer = renderer
         self.variables = defaultdict(Variable)
 
@@ -40,7 +37,7 @@ class Controller(threading.Thread):
             elif topic == "stopped":
                 self.renderer.clear()
                 break
-            else:
+            else:  # pragma: no-cover
                 raise ValueError(f"Unknown event {topic}")
 
             self.renderer.draw(self.variables)
@@ -57,11 +54,14 @@ class Controller(threading.Thread):
         self.garbage_collect()
 
     def garbage_collect(self):
-        self.variables = defaultdict(Variable, {
-            name: variable
-            for name, variable in self.variables.items()
-            if variable.is_live
-        })
+        self.variables = defaultdict(
+            Variable,
+            {
+                name: variable
+                for name, variable in self.variables.items()
+                if variable.is_live
+            },
+        )
 
 
 class Variable:
