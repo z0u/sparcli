@@ -17,7 +17,7 @@ def test_that_normalized_series_renders_as_vertical_bars(values, expected):
 
 def test_that_renderer_draws_variables(mocker):
     render = mocker.patch("sparcli.render.render_as_vertical_bars", autospec=True)
-    data = mocker.patch("sparcli.data", autospec=True)
+    mocker.patch("sparcli.data", autospec=True)
     renderer = sparcli.render.Renderer()
     renderer.write = mocker.MagicMock(sys.stdout.write)
     variables = {"a": mocker.MagicMock(), "b": mocker.MagicMock()}

@@ -1,7 +1,5 @@
 from contextlib import AbstractContextManager
 
-import sparcli.data
-
 
 class SparcliContext(AbstractContextManager):
     def __init__(self, event_queue):

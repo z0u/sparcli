@@ -67,7 +67,7 @@ def test_that_run_dispatches_to_methods(mocker, queue, renderer, effector):
 
 
 def test_that_data_is_written_to_variables(mocker, queue, renderer):
-    series = mocker.patch("sparcli.data.CompactingSeries").return_value
+    mocker.patch("sparcli.data.CompactingSeries")
     variable = sparcli.controller.Variable()
     mocker.patch("sparcli.controller.Variable").return_value = variable
     producer = mocker.Mock()
