@@ -5,11 +5,16 @@ on:
     types: [created]
 
 jobs:
+  lint:
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/lint
   test:
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/pythontest
+      - uses: ./.github/actions/test
   deploy:
+    needs: lint
     needs: test
     runs-on: ubuntu-latest
     steps:
