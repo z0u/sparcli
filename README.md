@@ -4,7 +4,7 @@ Use this library to see the shape of data during execution of data pipelines and
 
 
 ```
-pip install --user pymake poetry
+pip install --user py-make poetry
 pymake all
 ```
 
