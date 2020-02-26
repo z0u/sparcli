@@ -19,29 +19,28 @@ class CompactingSeries:
     def __init__(self, max_size: int):
         if max_size < 2 or max_size % 2 != 0:
             raise ValueError("max_size must be a multiple of 2")
-        self._values = np.array([], dtype=np.float32)
         self.max_size = max_size
         self.scale = 1
-        self.final_bucket = StableBucket()
+        self.head = StableBucket()
+        self.tail = np.array([], dtype=np.float32)
 
     @property
     def values(self):
-        if self.final_bucket.size == 0:
-            return np.copy(self._values)
-        return np.append(self._values, self.final_bucket.mean)
+        if self.head.size == 0:
+            return np.copy(self.tail)
+        head = self.head.mean
+        if self.tail.size != 0:
+            head = np.average([self.tail[-1], head], weights=[self.scale, self.head.size])
+        return np.append(self.tail, head)
 
     def add(self, value):
-        self.final_bucket.add(value)
-        if self.final_bucket.size == self.scale:
-            self._values = np.append(self._values, self.final_bucket.mean)
-            self.final_bucket.__init__()
-            if self._values.size == self.max_size:
-                self._values = compact(self._values)
+        self.head.add(value)
+        if self.head.size == self.scale:
+            self.tail = np.append(self.tail, self.head.mean)
+            self.head.__init__()
+            if self.tail.size == self.max_size:
+                self.tail = compact(self.tail)
                 self.scale *= 2
-
-    def add_all(self, values):
-        for value in values:
-            self.add(value)
 
 
 class StableBucket:

@@ -32,26 +32,30 @@ def test_that_compacting_series_checks_for_max_size_constraints(max_size):
 @pytest.mark.parametrize(
     "values,expected,scale", [([1], [1], 1), ([1, 2, 3, 4], [1.5, 3.5], 2),],
 )
-def test_that_series_automatically_compacts_when_it_reaches_capacity(
+def test_that_series_automatically_compacts(
     values, expected, scale
 ):
     series = sparcli.data.CompactingSeries(4)
 
-    series.add_all(values)
+    for value in values:
+        series.add(value)
 
     assert scale == series.scale
     assert np.allclose(expected, series.values)
 
 
-def test_that_final_bucket_value_is_included_in_values():
+def test_that_weighted_head_value_is_included_in_values():
     series = sparcli.data.CompactingSeries(4)
-    series.add_all([1, 2, 3, 4, 5])
+    for value in [1, 2, 3, 4, 5]:
+        series.add(value)
 
     values = series.values
 
-    assert series._values.size == 2
-    assert series.final_bucket.mean == 5
-    assert np.allclose([1.5, 3.5, 5], values)
+    assert series.scale == 2
+    assert series.head.size == 1
+    assert series.head.mean == 5
+    expected = [1.5, 3.5] + [sum([3.5, 3.5, 5]) / 3]
+    assert np.allclose(expected, values)
 
 
 @pytest.mark.parametrize(
