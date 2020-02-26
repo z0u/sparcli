@@ -30,7 +30,9 @@ class CompactingSeries:
             return np.copy(self.tail)
         head = self.head.mean
         if self.tail.size != 0:
-            head = np.average([self.tail[-1], head], weights=[self.scale, self.head.size])
+            values = [self.tail[-1], head]
+            weights = [self.scale, self.head.size]
+            head = np.average(values, weights=weights)
         return np.append(self.tail, head)
 
     def add(self, value):

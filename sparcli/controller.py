@@ -1,6 +1,6 @@
-from collections import defaultdict
-import queue
+from collections import defaultdict, deque
 import threading
+import time
 
 import sparcli.data
 
@@ -8,23 +8,21 @@ import sparcli.data
 class Controller(threading.Thread):
     def __init__(self, renderer):
         super().__init__(daemon=True)
-        try:
-            self.event_queue = queue.SimpleQueue()
-        except AttributeError:
-            self.event_queue = queue.Queue()
+        self.event_queue = deque()
         self.renderer = renderer
-        self.variables = defaultdict(Variable)
+        self.variables = defaultdict(lambda: Variable())
 
     def stop(self):
-        self.event_queue.put(("stopped",))
+        self.event_queue.append(("stopped",))
 
     def run(self):
         while True:
             try:
-                event = self.event_queue.get(timeout=0.1)
+                event = self.event_queue.popleft()
                 topic = event[0]
                 data = event[1:]
-            except queue.Empty:
+            except IndexError:
+                time.sleep(0.1)
                 topic = None
                 data = tuple()
 
@@ -67,7 +65,11 @@ class Controller(threading.Thread):
 class Variable:
     def __init__(self):
         self.references = set()
-        self.series = sparcli.data.CompactingSeries(30)
+        self._series = sparcli.data.CompactingSeries(30)
+
+    @property
+    def series(self):
+        return self._series
 
     @property
     def is_live(self):

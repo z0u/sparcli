@@ -32,9 +32,7 @@ def test_that_compacting_series_checks_for_max_size_constraints(max_size):
 @pytest.mark.parametrize(
     "values,expected,scale", [([1], [1], 1), ([1, 2, 3, 4], [1.5, 3.5], 2),],
 )
-def test_that_series_automatically_compacts(
-    values, expected, scale
-):
+def test_that_series_automatically_compacts(values, expected, scale):
     series = sparcli.data.CompactingSeries(4)
 
     for value in values:
