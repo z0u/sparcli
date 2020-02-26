@@ -8,7 +8,7 @@ all:
 	@make lint
 
 test:
-	poetry run pytest
+	poetry run pytest -v
 
 lint:
 	poetry run black --check --diff sparcli tests
