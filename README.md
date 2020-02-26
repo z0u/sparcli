@@ -1,6 +1,7 @@
-![](https://github.com/z0u/sparcli/workflows/Tests/badge.svg)
-![](https://github.com/z0u/sparcli/workflows/Linters/badge.svg)
-![](https://github.com/z0u/sparcli/workflows/Publish/badge.svg)
+![Tests](https://github.com/z0u/sparcli/workflows/Tests/badge.svg)
+![Linters](https://github.com/z0u/sparcli/workflows/Linters/badge.svg)
+![Canary build](https://github.com/z0u/sparcli/workflows/Canary%20build/badge.svg)
+![Publish](https://github.com/z0u/sparcli/workflows/Publish/badge.svg)
 
 SparCLI is a library for visualising metrics on the command line.
 
