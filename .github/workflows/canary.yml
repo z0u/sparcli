@@ -1,28 +1,28 @@
 name: Canary build
+# Upgrade and build periodically to check compatibility with the latest
+# versions of dependencies.
 
 on:
   schedule:
   - cron: "0 0 * * *"
-  push:
-    branches:
-      - master
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v1
         with:
           python-version: '3.8'
-      - name: Install dependencies
+      - name: Install locked dependencies
         run: |
           python -m pip install --upgrade pip
           pip install poetry
+          poetry install
       - name: Upgrade dependencies
         run: |
           poetry update
       - name: Build
         timeout-minutes: 5
         run: |
-          make
+          make all
