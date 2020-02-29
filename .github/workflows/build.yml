@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -21,7 +21,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install poetry
           poetry install
+      - name: Run linters
+        run: |
+          make lint
       - name: Run tests
         timeout-minutes: 5
         run: |
           make test
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: python-package
+          path: dist
