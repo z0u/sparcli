@@ -27,6 +27,9 @@ black = "^19.10b0"
 pytest-mock = "^2.0.0"
 coverage = {extras = ["toml"], version = "^5.0.3"}
 
+[tool.coverage.run]
+omit = ["sparcli/capture.py"]
+
 [tool.coverage.report]
 exclude_lines = [
     "pragma: no-cover",
