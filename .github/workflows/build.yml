@@ -28,6 +28,9 @@ jobs:
         timeout-minutes: 5
         run: |
           make test
+      - name: Build
+        run: |
+          poetry build
       - name: Upload artifact
         uses: actions/upload-artifact@v1.0.0
         with:
