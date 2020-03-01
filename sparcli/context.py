@@ -13,4 +13,7 @@ class SparcliContext(AbstractContextManager):
 
     def __exit__(self, exc_type, exc_value, traceback):
         del exc_type, exc_value, traceback
+        self.close()
+
+    def close(self):
         self.emit(("producer_stopped", self))

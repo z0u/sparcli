@@ -17,16 +17,18 @@ classifiers = [
 keywords = ["console", "sparkline", "data", "visualization"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.5"
 numpy = "^1.18.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.3.5"
 pytest-cov = "^2.8.1"
 flake8 = "^3.7.9"
-black = "^19.10b0"
+black = {version = "^19.10b0", python = "^3.6"}
 pytest-mock = "^2.0.0"
 coverage = {extras = ["toml"], version = "^5.0.3"}
+bandit = "^1.6.2"
+safety = "^1.8.5"
 
 [tool.coverage.run]
 omit = ["sparcli/capture.py"]
