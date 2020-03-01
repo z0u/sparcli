@@ -20,13 +20,13 @@ pip install sparcli
 You can wrap an iterable that produces scalars:
 
 ```python
-import sparcli, time
+import sparcli
 
 for y in sparcli.gen(ys, name="y"):
     do_something(y)
 ```
 
-You can produce metrics using a context manager:
+You can publish metrics using a context manager:
 
 ```python
 with sparcli.ctx() as ctx:
@@ -41,24 +41,28 @@ class MyMetricsPlugin:
     def start(self):
         self.ctx = sparcli.context()
 
-    def callback(self, metrics: Dict[str, Real]):
+    def step(self, metrics: Dict[str, Real]):
         self.ctx.record(**metrics)
 
     def stop(self):
         self.ctx.close()
 
-some_library.register_plugin(MyPlugin())
+some_library.register_plugin(MyMetricsPlugin())
 ```
 
 
 ## Development
 
 ```sh
-pip install --user py-make poetry
+pip install --user poetry
 poetry install
-pymake all
+make
+poetry run python demo.py
 ```
 
+If you're on a system without GNU Make, you can use py-make instead:
+
 ```sh
-poetry run python demo.py
+pip install --user py-make
+alias make='pymake'
 ```
