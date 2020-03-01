@@ -1,3 +1,4 @@
+---
 name: Publish
 
 on:
@@ -9,41 +10,41 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
-      with:
-        python-version: '3.8'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install poetry
-        poetry install
-    - name: Check that version matches tag
-      env:
-        GITHUB_REF: ${{ github.ref }}
-      run: |
-        version="$(poetry version)"
-        expected="sparcli ${GITHUB_REF#refs/tags/}"
-        if [[ "$expected" == "$version" ]]; then
-          echo "OK" >&2
-        else
-          echo "Expected version '$expected' does not match '$version'" >&2
-          echo "Ref: $GITHUB_REF" >&2
-          exit 1
-        fi
-    - name: Run tests
-      timeout-minutes: 5
-      run: |
-        make test
-    - name: Run security scanners
-      timeout-minutes: 5
-      run: |
-        make scan
-    - name: Build
-      run: |
-        make build
-    - name: Publish
-      env:
-        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
-      run: |
-        make publish
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.8'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+      - name: Check that version matches tag
+        env:
+          GITHUB_REF: ${{ github.ref }}
+        run: |
+          version="$(poetry version)"
+          expected="sparcli ${GITHUB_REF#refs/tags/}"
+          if [[ "$expected" == "$version" ]]; then
+            echo "OK" >&2
+          else
+            echo "Expected version '$expected' does not match '$version'" >&2
+            echo "Ref: $GITHUB_REF" >&2
+            exit 1
+          fi
+      - name: Run tests
+        timeout-minutes: 5
+        run: |
+          make test
+      - name: Run security scanners
+        timeout-minutes: 5
+        run: |
+          make scan
+      - name: Build
+        run: |
+          make build
+      - name: Publish
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          make publish

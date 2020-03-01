@@ -1,27 +1,28 @@
+---
 name: Mark stale issues and pull requests
 
 on:
   schedule:
-  - cron: "37 8 * * *"
+    - cron: "37 8 * * *"
 
 jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/stale@v1
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        stale-issue-message: >-
-          This issue is stale because it has been idle for 60 days with no
-          activity. Remove stale label or comment or it will be closed in
-          15 days
-        stale-pr-message: >-
-          This PU is stale because it has been idle for 60 days with no
-          activity. Remove stale label or comment or it will be closed in
-          15 days
-        stale-issue-label: stale
-        stale-pr-label: stale
-        exempt-issue-label: critical
-        exempt-pr-label: critical
-        days-before-stale: 60
-        days-before-close: 15
+      - uses: actions/stale@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-issue-message: >-
+            This issue is stale because it has been idle for 60 days with no
+            activity. Remove stale label or comment or it will be closed in
+            15 days
+          stale-pr-message: >-
+            This PU is stale because it has been idle for 60 days with no
+            activity. Remove stale label or comment or it will be closed in
+            15 days
+          stale-issue-label: stale
+          stale-pr-label: stale
+          exempt-issue-label: critical
+          exempt-pr-label: critical
+          days-before-stale: 60
+          days-before-close: 15

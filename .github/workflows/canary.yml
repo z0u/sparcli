@@ -1,10 +1,11 @@
+---
 name: Canary build
 # Upgrade and build periodically to check compatibility with the latest
 # versions of dependencies.
 
 on:
   schedule:
-  - cron: "43 10 * * 4"
+    - cron: "43 10 * * 4"
 
 jobs:
   security:

@@ -468,6 +468,18 @@ version = "0.1.8"
 
 [[package]]
 category = "dev"
+description = "A linter for YAML files."
+name = "yamllint"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.20.0"
+
+[package.dependencies]
+pathspec = ">=0.5.3"
+pyyaml = "*"
+
+[[package]]
+category = "dev"
 description = "Backport of pathlib-compatible object wrapper for zip files"
 marker = "python_version < \"3.8\""
 name = "zipp"
@@ -480,7 +492,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "38377380f1705d0930a856fcda46048c648ed0e9565664b8bfbc88345a1c6f59"
+content-hash = "9f5c892cda0e03eca2b414bb9fdd6f433d8dac840a837795e0316b241ff997a4"
 python-versions = "^3.6"
 
 [metadata.files]
@@ -747,6 +759,10 @@ urllib3 = [
 wcwidth = [
     {file = "wcwidth-0.1.8-py2.py3-none-any.whl", hash = "sha256:8fd29383f539be45b20bd4df0dc29c20ba48654a41e661925e612311e9f3c603"},
     {file = "wcwidth-0.1.8.tar.gz", hash = "sha256:f28b3e8a6483e5d49e7f8949ac1a78314e740333ae305b4ba5defd3e74fb37a8"},
+]
+yamllint = [
+    {file = "yamllint-1.20.0-py2.py3-none-any.whl", hash = "sha256:7318e189027951983c3cb4d6bcaa1e75deef7c752320ca3ce84e407f2551e8ce"},
+    {file = "yamllint-1.20.0.tar.gz", hash = "sha256:76912b6262fd7e0815d7b14c4c2bb2642c754d0aa38f2d3e4b4e21c77872a3bf"},
 ]
 zipp = [
     {file = "zipp-3.0.0-py3-none-any.whl", hash = "sha256:12248a63bbdf7548f89cb4c7cda4681e537031eda29c02ea29674bc6854460c2"},
