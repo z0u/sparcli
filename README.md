@@ -11,7 +11,7 @@ Use this library to see the shape of data during execution of data pipelines, si
 
 ## Usage
 
-Sparcli is [available on pypi](https://pypi.org/project/sparcli/):
+Sparcli is [available on PyPI](https://pypi.org/project/sparcli/):
 
 ```sh
 pip install sparcli
