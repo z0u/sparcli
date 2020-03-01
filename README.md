@@ -1,14 +1,17 @@
-![Build](https://github.com/z0u/sparcli/workflows/Build/badge.svg)
-![Publish](https://github.com/z0u/sparcli/workflows/Publish/badge.svg)
-
 # Sparcli
 
 Sparcli is a library for visualising metrics on the command line.
 
 Use this library to see the shape of data during execution of data pipelines, simulators and other long-running programs. Each metric is displayed as a sparkline that updates as the data changes. Sparcli is thread-safe and non-blocking.
 
+![Build](https://github.com/z0u/sparcli/workflows/Build/badge.svg)
+![Publish](https://github.com/z0u/sparcli/workflows/Publish/badge.svg)
+![Canary build](https://github.com/z0u/sparcli/workflows/Canary%20build/badge.svg)
+
 
 ## Usage
+
+Sparcli is [available on pypi](https://pypi.org/project/sparcli/):
 
 ```sh
 pip install sparcli
@@ -17,7 +20,7 @@ pip install sparcli
 You can wrap an iterable that produces scalars:
 
 ```python
-import sparcli
+import sparcli, time
 
 for y in sparcli.gen(ys, name="y"):
     do_something(y)
@@ -52,7 +55,7 @@ some_library.register_plugin(MyPlugin())
 
 ```sh
 pip install --user py-make poetry
-poetry install -E linters
+poetry install
 pymake all
 ```
 

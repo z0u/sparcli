@@ -18,6 +18,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install poetry
         poetry install
+    - name: Check that version matches tag
+      run: |
+        [[ "sparcli ${GITHUB_REF#refs/heads/}" == $(poetry version) ]]
     - name: Run tests
       timeout-minutes: 5
       run: |
