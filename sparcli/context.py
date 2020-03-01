@@ -1,7 +1,4 @@
-from contextlib import AbstractContextManager
-
-
-class SparcliContext(AbstractContextManager):
+class SparcliContext:
     def __init__(self, event_queue):
         self.emit = event_queue.append
 
