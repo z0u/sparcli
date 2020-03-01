@@ -22,7 +22,15 @@ jobs:
       env:
         GITHUB_REF: ${{ github.ref }}
       run: |
-        [[ "sparcli ${GITHUB_REF#refs/heads/}" == $(poetry version) ]]
+        version="$(poetry version)"
+        expected="sparcli ${GITHUB_REF#refs/tags/}"
+        if [[ "$expected" == "$version" ]]; then
+          echo "OK" >&2
+        else
+          echo "Expected version '$expected' does not match '$version'" >&2
+          echo "Ref: $GITHUB_REF" >&2
+          exit 1
+        fi
     - name: Run tests
       timeout-minutes: 5
       run: |
