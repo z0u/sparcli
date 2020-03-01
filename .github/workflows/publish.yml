@@ -19,6 +19,8 @@ jobs:
         pip install poetry
         poetry install
     - name: Check that version matches tag
+      env:
+        GITHUB_REF: ${{ github.ref }}
       run: |
         [[ "sparcli ${GITHUB_REF#refs/heads/}" == $(poetry version) ]]
     - name: Run tests
