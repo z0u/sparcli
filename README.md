@@ -4,9 +4,9 @@ Sparcli is a library for visualising metrics on the command line.
 
 Use this library to see the shape of data during execution of data pipelines, simulators and other long-running programs. Each metric is displayed as a sparkline that updates as the data changes. Sparcli is thread-safe and non-blocking.
 
-![Build](https://github.com/z0u/sparcli/workflows/Build/badge.svg)
-![Publish](https://github.com/z0u/sparcli/workflows/Publish/badge.svg)
-![Canary build](https://github.com/z0u/sparcli/workflows/Canary%20build/badge.svg)
+[![Build](https://github.com/z0u/sparcli/workflows/Build/badge.svg)](https://github.com/z0u/sparcli/actions?query=workflow%3ABuild)
+[![Publish](https://github.com/z0u/sparcli/workflows/Publish/badge.svg)](https://github.com/z0u/sparcli/actions?query=workflow%3APublish)
+[![Canary build](https://github.com/z0u/sparcli/workflows/Canary%20build/badge.svg)](https://github.com/z0u/sparcli/actions?query=workflow%3A%22Canary+build%22)
 
 
 ## Usage
