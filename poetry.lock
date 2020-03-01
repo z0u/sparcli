@@ -1,7 +1,6 @@
 [[package]]
 category = "dev"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
-marker = "python_version >= \"3.6\" and python_version < \"4.0\""
 name = "appdirs"
 optional = false
 python-versions = "*"
@@ -48,7 +47,6 @@ stevedore = ">=1.20.0"
 [[package]]
 category = "dev"
 description = "The uncompromising code formatter."
-marker = "python_version >= \"3.6\" and python_version < \"4.0\""
 name = "black"
 optional = false
 python-versions = ">=3.6"
@@ -237,20 +235,7 @@ six = "*"
 
 [[package]]
 category = "dev"
-description = "Object-oriented filesystem paths"
-marker = "python_version < \"3.6\""
-name = "pathlib2"
-optional = false
-python-versions = "*"
-version = "2.3.5"
-
-[package.dependencies]
-six = "*"
-
-[[package]]
-category = "dev"
 description = "Utility library for gitignore style pattern matching of file paths."
-marker = "python_version >= \"3.6\" and python_version < \"4.0\""
 name = "pathspec"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
@@ -334,10 +319,6 @@ wcwidth = "*"
 python = "<3.8"
 version = ">=0.12"
 
-[package.dependencies.pathlib2]
-python = "<3.6"
-version = ">=2.2.0"
-
 [package.extras]
 checkqa-mypy = ["mypy (v0.761)"]
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
@@ -382,7 +363,6 @@ version = "5.3"
 [[package]]
 category = "dev"
 description = "Alternative regular expression module, to replace re."
-marker = "python_version >= \"3.6\" and python_version < \"4.0\""
 name = "regex"
 optional = false
 python-versions = "*"
@@ -460,7 +440,6 @@ version = "0.10.0"
 [[package]]
 category = "dev"
 description = "a fork of Python 2 and 3 ast modules with type comment support"
-marker = "python_version >= \"3.6\" and python_version < \"4.0\""
 name = "typed-ast"
 optional = false
 python-versions = "*"
@@ -493,16 +472,16 @@ description = "Backport of pathlib-compatible object wrapper for zip files"
 marker = "python_version < \"3.8\""
 name = "zipp"
 optional = false
-python-versions = ">=2.7"
-version = "1.2.0"
+python-versions = ">=3.6"
+version = "3.0.0"
 
 [package.extras]
 docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
-testing = ["pathlib2", "unittest2", "jaraco.itertools", "func-timeout"]
+testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "668d44e8fa5181ae51918d71cb057492108b3b7ceadbfe8d409d488d85d69345"
-python-versions = "^3.5"
+content-hash = "38377380f1705d0930a856fcda46048c648ed0e9565664b8bfbc88345a1c6f59"
+python-versions = "^3.6"
 
 [metadata.files]
 appdirs = [
@@ -637,10 +616,6 @@ packaging = [
     {file = "packaging-20.1-py2.py3-none-any.whl", hash = "sha256:170748228214b70b672c581a3dd610ee51f733018650740e98c7df862a583f73"},
     {file = "packaging-20.1.tar.gz", hash = "sha256:e665345f9eef0c621aa0bf2f8d78cf6d21904eef16a93f020240b704a57f1334"},
 ]
-pathlib2 = [
-    {file = "pathlib2-2.3.5-py2.py3-none-any.whl", hash = "sha256:0ec8205a157c80d7acc301c0b18fbd5d44fe655968f5d947b6ecef5290fc35db"},
-    {file = "pathlib2-2.3.5.tar.gz", hash = "sha256:6cd9a47b597b37cc57de1c05e56fb1a1c9cc9fab04fe78c29acd090418529868"},
-]
 pathspec = [
     {file = "pathspec-0.7.0-py2.py3-none-any.whl", hash = "sha256:163b0632d4e31cef212976cf57b43d9fd6b0bac6e67c26015d611a647d5e7424"},
     {file = "pathspec-0.7.0.tar.gz", hash = "sha256:562aa70af2e0d434367d9790ad37aed893de47f1693e4201fd1d3dca15d19b96"},
@@ -774,6 +749,6 @@ wcwidth = [
     {file = "wcwidth-0.1.8.tar.gz", hash = "sha256:f28b3e8a6483e5d49e7f8949ac1a78314e740333ae305b4ba5defd3e74fb37a8"},
 ]
 zipp = [
-    {file = "zipp-1.2.0-py2.py3-none-any.whl", hash = "sha256:e0d9e63797e483a30d27e09fffd308c59a700d365ec34e93cc100844168bf921"},
-    {file = "zipp-1.2.0.tar.gz", hash = "sha256:c70410551488251b0fee67b460fb9a536af8d6f9f008ad10ac51f615b6a521b1"},
+    {file = "zipp-3.0.0-py3-none-any.whl", hash = "sha256:12248a63bbdf7548f89cb4c7cda4681e537031eda29c02ea29674bc6854460c2"},
+    {file = "zipp-3.0.0.tar.gz", hash = "sha256:7c0f8e91abc0dc07a5068f315c52cb30c66bfbc581e5b50704c8a2f6ebae794a"},
 ]
