@@ -2,6 +2,7 @@
 from itertools import count
 import math
 import random
+import sys
 from threading import Thread
 import time
 
@@ -24,7 +25,7 @@ def start_producers():
     global running
     running = True
     jobs = []
-    for producer in (using_context_manager, using_generator):
+    for producer in (context_manager, generator, text):
         job = Thread(target=producer, daemon=True)
         job.start()
         jobs.append(job)
@@ -38,14 +39,15 @@ def stop_producers(jobs):
         job.join()
 
 
-def using_context_manager():
+def context_manager():
     with sparcli.ctx() as context:
         while running:
             context.record(random=random.random())
             time.sleep(0.1)
 
 
-def using_generator():
+def generator():
+    time.sleep(0.5)
     for y in sparcli.gen(sinewave(), "sine"):
         if not running:
             break
@@ -57,6 +59,14 @@ def sinewave():
     while True:
         yield np.sin(x / 10)
         x += 1
+
+
+def text():
+    time.sleep(1)
+    while running:
+        print("Print to stdout")
+        print("Print to stderr", file=sys.stderr)
+        time.sleep(1)
 
 
 if __name__ == "__main__":

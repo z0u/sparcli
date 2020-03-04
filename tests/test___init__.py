@@ -2,7 +2,7 @@ import threading
 import time
 
 import sparcli
-from sparcli import controller_factory, _Main
+from sparcli import _controller_factory, _Main
 
 
 def test_that_it_can_be_used_as_a_context_manager(mocker):
@@ -31,10 +31,11 @@ def test_that_it_can_wrap_an_iterable(mocker):
 
 
 def test_that_controller_is_configured(mocker):
-    renderer = mocker.patch("sparcli.render.Renderer", autospec=True)()
+    capture = mocker.patch("sparcli.capture.CaptureManager", autospec=True)("fd")
+    renderer = mocker.patch("sparcli.render.Renderer", autospec=True)(capture)
     Controller = mocker.patch("sparcli.controller.Controller", autospec=True)
 
-    controller_factory()
+    _controller_factory()
 
     Controller.assert_called_with(renderer)
 
@@ -50,7 +51,7 @@ def run_concurrently(function, n):
 def test_that_only_one_controller_can_exist(mocker):
     main = _Main(threading.Lock())
     controller = mocker.MagicMock(sparcli.controller.Controller, autospec=True)()
-    mocker.patch.object(sparcli, "controller_factory", return_value=controller)
+    mocker.patch.object(sparcli, "_controller_factory", return_value=controller)
     atexit = mocker.patch("atexit.register", autospec=True)
     controller.start.side_effect = lambda: time.sleep(0.1)
 

@@ -13,9 +13,10 @@ class Controller(threading.Thread):
         self.variables = defaultdict(lambda: Variable())
 
     def stop(self):
-        self.event_queue.append(("stopped",))
+        self.event_queue.append(("controller_stopped",))
 
     def run(self):
+        self.renderer.start()
         while True:
             try:
                 event = self.event_queue.popleft()
@@ -32,8 +33,8 @@ class Controller(threading.Thread):
                 self.data_produced(*data)
             elif topic == "producer_stopped":
                 self.producer_stopped(*data)
-            elif topic == "stopped":
-                self.renderer.clear()
+            elif topic == "controller_stopped":
+                self.renderer.close()
                 break
             else:  # pragma: no-cover
                 raise ValueError(f"Unknown event {topic}")

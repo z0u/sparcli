@@ -1,6 +1,7 @@
 import atexit
 import threading
 
+import sparcli.capture
 import sparcli.context
 import sparcli.controller
 import sparcli.render
@@ -21,31 +22,47 @@ def gen(iterable, name):
             yield value
 
 
-def controller_factory():
-    renderer = sparcli.render.Renderer()
+CAPTURE_METHOD = "fd"
+
+
+def _controller_factory():
+    capture_manager = sparcli.capture.CaptureManager(CAPTURE_METHOD)
+    renderer = sparcli.render.Renderer(capture_manager)
     return sparcli.controller.Controller(renderer)
 
 
 class _Main:
     def __init__(self, lock):
         self.controller = None
+        self.initialized = False
         self.controller_lock = lock
 
     def get_controller(self):
         with self.controller_lock:
+            if not self.initialized:
+                self.initialize()
             if not self.controller:
-                atexit.register(self.cleanup)
-                self.controller = controller_factory()
-                self.controller.start()
+                self.build()
         return self.controller
 
     def cleanup(self):
         with self.controller_lock:
-            if not self.controller:
-                return
-            self.controller.stop()
-            self.controller.join()
-            self.controller = None
+            if self.controller:
+                self.tear_down()
+
+    def initialize(self):
+        sparcli.capture.apply_workarounds(CAPTURE_METHOD)
+        self.initialized = True
+
+    def build(self):
+        atexit.register(self.cleanup)
+        self.controller = _controller_factory()
+        self.controller.start()
+
+    def tear_down(self):
+        self.controller.stop()
+        self.controller.join()
+        self.controller = None
 
 
 _main = _Main(threading.Lock())
