@@ -1,5 +1,6 @@
 """
 stdio capturing mechanism.
+From https://github.com/pytest-dev/pytest/blob/1df593f97890245a8eaaa89444a3ba7bada2a3b0/src/_pytest/capture.py
 """
 import collections
 import io
