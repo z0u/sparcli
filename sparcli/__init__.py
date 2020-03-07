@@ -26,8 +26,8 @@ CAPTURE_METHOD = "fd"
 
 
 def _controller_factory():
-    capture_manager = sparcli.capture.CaptureManager(CAPTURE_METHOD)
-    renderer = sparcli.render.Renderer(capture_manager)
+    capture = sparcli.capture.factory(CAPTURE_METHOD)
+    renderer = sparcli.render.Renderer(capture)
     return sparcli.controller.Controller(renderer)
 
 

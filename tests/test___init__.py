@@ -31,7 +31,7 @@ def test_that_it_can_wrap_an_iterable(mocker):
 
 
 def test_that_controller_is_configured(mocker):
-    capture = mocker.patch("sparcli.capture.CaptureManager", autospec=True)("fd")
+    capture = mocker.patch("sparcli.capture.MultiCapture", autospec=True)("fd")
     renderer = mocker.patch("sparcli.render.Renderer", autospec=True)(capture)
     Controller = mocker.patch("sparcli.controller.Controller", autospec=True)
 

@@ -15,8 +15,9 @@ def test_that_normalized_series_renders_as_vertical_bars(values, expected):
 
 @pytest.fixture
 def capture(mocker):
-    capture = mocker.patch("sparcli.capture.CaptureManager", autospec=True)("fd")
-    yield capture
+    yield mocker.patch("sparcli.capture.MultiCapture", autospec=True)(
+        out=True, err=True, capture_factory=None
+    )
 
 
 def test_that_renderer_draws_variables(mocker, capture):
@@ -35,10 +36,10 @@ def test_that_renderer_draws_variables(mocker, capture):
 def test_that_renderer_captures_output(mocker, capture):
     renderer = sparcli.render.Renderer(capture)
     renderer.start()
-    assert capture.start_global_capturing.called
+    assert capture.start.called
 
 
 def test_that_renderer_releases_output(mocker, capture):
     renderer = sparcli.render.Renderer(capture)
     renderer.close()
-    assert capture.stop_global_capturing.called
+    assert capture.stop.called

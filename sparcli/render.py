@@ -23,20 +23,20 @@ CLEAR_LINE = f"{CSI}2K"
 
 
 class Renderer:
-    def __init__(self, capture_manager):
+    def __init__(self, capture):
         self.height = 0
-        self.capture_manager = capture_manager
-        self.write = capture_manager.write_out
+        self.capture = capture
+        self.write = capture.write_out
 
     def start(self):
-        self.capture_manager.start_global_capturing()
+        self.capture.start()
 
     def close(self):
-        self.capture_manager.stop_global_capturing()
+        self.capture.stop()
 
     def draw(self, variables):
         self.clear()
-        self.capture_manager.pop_outerr_to_orig()
+        self.capture.flush()
         name_width = max((len(name) for name in variables), default=0)
         for name, variable in variables.items():
             values = sparcli.data.normalize(variable.series.values)
