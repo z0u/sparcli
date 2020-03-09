@@ -1,8 +1,15 @@
 import threading
 import time
 
+import pytest
+
 import sparcli
 from sparcli import _controller_factory, _Main
+
+
+@pytest.fixture(autouse=True)
+def mock_capture(mocker):
+    mocker.patch("sparcli.capture")
 
 
 def test_that_it_can_be_used_as_a_context_manager(mocker):
@@ -52,6 +59,7 @@ def test_that_only_one_controller_can_exist(mocker):
     main = _Main(threading.Lock())
     controller = mocker.MagicMock(sparcli.controller.Controller, autospec=True)()
     mocker.patch.object(sparcli, "_controller_factory", return_value=controller)
+    cap_workarounds = mocker.patch("sparcli.capture.apply_workarounds", autospec=True)
     atexit = mocker.patch("atexit.register", autospec=True)
     controller.start.side_effect = lambda: time.sleep(0.1)
 
@@ -59,6 +67,7 @@ def test_that_only_one_controller_can_exist(mocker):
 
     assert controller.start.call_count == 1
     atexit.assert_called_once_with(main.cleanup)
+    assert cap_workarounds.called
 
 
 def test_that_controller_is_cleaned_up_on_exit(mocker):

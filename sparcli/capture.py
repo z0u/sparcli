@@ -10,7 +10,7 @@ from tempfile import TemporaryFile
 from typing import IO, Optional
 
 
-def apply_workarounds(method: str):
+def apply_workarounds(method: str):  # pragma: no-cover
     if method == "fd":
         _py36_windowsconsoleio_workaround(sys.stdout)
     _colorama_workaround()
@@ -46,9 +46,6 @@ class MultiCapture:
     def __init__(self, out, err):
         self.out = out
         self.err = err
-
-    def __repr__(self):
-        return f"<MultiCapture out={self.out} err={self.err}>"
 
     def start(self):
         self.out.start()
@@ -133,9 +130,6 @@ class RedirectCapture(Capture):
         self.original_file = None
         self.capture_file = capture_file
 
-    def __repr__(self):
-        return f"<RedirectCapture {self.target_file.fileno()}>"
-
     def __enter__(self):
         self.start()
         return self
@@ -175,7 +169,7 @@ class RedirectCapture(Capture):
         self.original_file.write(data)
 
 
-def _colorama_workaround():
+def _colorama_workaround():  # pragma: no-cover
     """
     Ensure colorama is imported so that it attaches to the correct stdio
     handles on Windows.
@@ -191,7 +185,7 @@ def _colorama_workaround():
             pass
 
 
-def _readline_workaround():
+def _readline_workaround():  # pragma: no-cover
     """
     Ensure readline is imported so that it attaches to the correct stdio
     handles on Windows.
@@ -214,7 +208,7 @@ def _readline_workaround():
             pass
 
 
-def _py36_windowsconsoleio_workaround(stream):
+def _py36_windowsconsoleio_workaround(stream):  # pragma: no-cover
     """
     Python 3.6 implemented unicode console handling for Windows. This works
     by reading/writing to the raw console handle using
