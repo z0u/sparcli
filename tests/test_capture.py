@@ -14,10 +14,7 @@ PIPE = subprocess.PIPE
 def run_py():
     def run(program):
         proc_info = subprocess.run(
-            [sys.executable, "-c", program],
-            stdout=PIPE,
-            stderr=PIPE,
-            timeout=5.0,
+            [sys.executable, "-c", program], stdout=PIPE, stderr=PIPE, timeout=5.0,
         )
         print(proc_info.stdout)
         print(proc_info.stderr, sys.stderr)
