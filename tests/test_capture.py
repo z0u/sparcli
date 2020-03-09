@@ -17,7 +17,6 @@ def run_py():
             [sys.executable, "-c", program],
             stdout=PIPE,
             stderr=PIPE,
-            text=True,
             timeout=5.0,
         )
         print(proc_info.stdout)
@@ -45,7 +44,7 @@ def test_that_subprocess_outputs_are_captured(run_py, fd_name):
     proc_info = run_py(program)
 
     assert proc_info.returncode == 0
-    assert getattr(proc_info, fd_name) == "123"
+    assert getattr(proc_info, fd_name) == b"123"
 
 
 @pytest.mark.feature
