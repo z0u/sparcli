@@ -32,7 +32,7 @@ class Renderer:
         self.capture.start()
 
     def close(self):
-        self.capture.stop()
+        self.capture.close()
 
     def draw(self, variables):
         self.clear()
