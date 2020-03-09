@@ -95,26 +95,27 @@ class Capture:
 
 
 class NoCapture(Capture):
-    def __repr__(self):
-        return f"<NoCapture>"
+    pass
 
 
 def create_capture_file_for(target_file):
+    newlines = target_file.newlines if hasattr(target_file, "newlines") else ""
     return TemporaryFile(
         target_file.mode if "+" in target_file.mode else target_file.mode + "+",
         encoding=target_file.encoding,
-        newline=target_file.newlines,
+        newline=newlines,
     )
 
 
 def dup_file(target_file):
     original_fd = os.dup(target_file.fileno())
+    newlines = target_file.newlines if hasattr(target_file, "newlines") else ""
     return os.fdopen(
         original_fd,
         mode=target_file.mode,
         encoding=target_file.encoding,
         errors=target_file.errors,
-        newline=target_file.newlines,
+        newline=newlines,
     )
 
 
@@ -135,6 +136,13 @@ class RedirectCapture(Capture):
     def __repr__(self):
         return f"<RedirectCapture {self.target_file.fileno()}>"
 
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
     def start(self):
         if self.original_file is not None:
             raise IOError(f"Already capturing {self}")
@@ -145,6 +153,7 @@ class RedirectCapture(Capture):
         if self.original_file is None:
             raise IOError(f"Not capturing {self}")
         self.suspend()
+        self.flush()
         self.original_file.close()
         self.original_file = None
         self.capture_file.close()
