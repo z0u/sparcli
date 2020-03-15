@@ -26,8 +26,8 @@ CAPTURE_METHOD = "fd"
 
 
 def _controller_factory():
-    capture = sparcli.capture.factory(CAPTURE_METHOD)
-    renderer = sparcli.render.Renderer(capture)
+    capture = sparcli.capture.make_multi_capture(True, True)
+    renderer = sparcli.render.Renderer(capture.write_out, capture)
     return sparcli.controller.Controller(renderer)
 
 
@@ -51,7 +51,7 @@ class _Main:
                 self.tear_down()
 
     def initialize(self):
-        sparcli.capture.apply_workarounds(CAPTURE_METHOD)
+        sparcli.capture.init()
         self.initialized = True
 
     def build(self):

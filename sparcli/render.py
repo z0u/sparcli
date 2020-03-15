@@ -23,10 +23,10 @@ CLEAR_LINE = f"{CSI}2K"
 
 
 class Renderer:
-    def __init__(self, capture):
+    def __init__(self, write, capture):
         self.height = 0
         self.capture = capture
-        self.write = capture.write_out
+        self.write = write
 
     def start(self):
         self.capture.start()

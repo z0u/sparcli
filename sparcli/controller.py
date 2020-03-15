@@ -23,7 +23,7 @@ class Controller(threading.Thread):
                 topic = event[0]
                 data = event[1:]
             except IndexError:
-                time.sleep(0.1)
+                time.sleep(1 / 30)
                 topic = None
                 data = tuple()
 

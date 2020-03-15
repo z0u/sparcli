@@ -25,7 +25,7 @@ def start_producers():
     global running
     running = True
     jobs = []
-    for producer in (context_manager, generator, text):
+    for producer in (context_manager, generator):
         job = Thread(target=producer, daemon=True)
         job.start()
         jobs.append(job)
@@ -42,15 +42,17 @@ def stop_producers(jobs):
 def context_manager():
     with sparcli.ctx() as context:
         while running:
-            context.record(random=random.random())
+            y = random.random()
+            context.record(random=y)
+            print(f"random: {y:+0.3f} (stdout)")
             time.sleep(0.1)
 
 
 def generator():
-    time.sleep(0.5)
     for y in sparcli.gen(sinewave(), "sine"):
         if not running:
             break
+        print(f"sine:   {y:+0.3f} (stderr)", file=sys.stderr)
         time.sleep(0.2)
 
 
@@ -59,14 +61,6 @@ def sinewave():
     while True:
         yield np.sin(x / 10)
         x += 1
-
-
-def text():
-    time.sleep(1)
-    while running:
-        print("Print to stdout")
-        print("Print to stderr", file=sys.stderr)
-        time.sleep(1)
 
 
 if __name__ == "__main__":
