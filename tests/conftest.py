@@ -2,15 +2,20 @@ import pytest
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
-def pytest_runtestloop(session):
-    yield
+def pytest_sessionstart(session):
     disable_coverage_when_not_all_tests_were_run(session.config)
+    yield
 
 
 def disable_coverage_when_not_all_tests_were_run(config):
-    plugin = config.pluginmanager.getplugin("_cov")
-    if plugin and (config.option.keyword or config.option.file_or_dir):
-        plugin.cov_total = None
+    if not config.pluginmanager.has_plugin("_cov"):
+        return
+    if config.option.collectonly:
+        config.pluginmanager.unregister(name="_cov")
+    elif config.option.file_or_dir and "tests" not in config.option.file_or_dir:
+        config.pluginmanager.unregister(name="_cov")
+    elif config.option.keyword:
+        config.pluginmanager.unregister(name="_cov")
 
 
 @pytest.fixture

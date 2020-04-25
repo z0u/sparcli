@@ -12,6 +12,10 @@ all:
 	@make scan
 	@make build
 
+init:
+	poetry run pip install --upgrade pip setuptools
+	poetry install
+
 test:
 	poetry run pytest -v
 

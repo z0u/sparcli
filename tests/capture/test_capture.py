@@ -70,7 +70,7 @@ def test_that_capture_raises_error_if_already_started(mute_capture):
     assert "Already capturing" in str(error.value)
 
 
-def test_that_cclose_raises_error_if_not_started(mute_capture):
+def test_that_close_raises_error_if_not_started(mute_capture):
     with pytest.raises(IOError) as error:
         mute_capture.close()
     assert "Not capturing" in str(error.value)

@@ -53,16 +53,23 @@ some_library.register_plugin(MyMetricsPlugin())
 
 ## Development
 
+First install [Python] 3.6+, [Poetry] and Make. Optionally, use [py-make] if you don't have GNU Make. If you have Python and [pipx] installed, you can get started by running:
+
 ```sh
-pip install --user poetry
-poetry install
+pipx install poetry
+pipx install py-make
+alias make='pymake'
+make init
+```
+
+Then run the tests and demo:
+
+```sh
 make
 poetry run python demo.py
 ```
 
-If you're on a system without GNU Make, you can use py-make instead:
-
-```sh
-pip install --user py-make
-alias make='pymake'
-```
+[Python]: https://www.python.org/
+[Poetry]: https://python-poetry.org/
+[py-make]: https://github.com/tqdm/py-make#py-make
+[pipx]: https://github.com/pipxproject/pipx#pipx--install-and-run-python-applications-in-isolated-environments
