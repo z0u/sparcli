@@ -11,7 +11,7 @@ import io
 import os
 import sys
 
-from ctypes import windll, byref, wintypes, GetLastError, WinError
+from ctypes import windll, byref, wintypes, WinError
 from ctypes.wintypes import HANDLE, DWORD, POINTER, BOOL
 import msvcrt
 

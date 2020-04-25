@@ -1,4 +1,4 @@
-import os
+from . import os_facade as os
 
 
 class Capture:

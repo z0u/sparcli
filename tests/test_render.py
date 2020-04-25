@@ -15,7 +15,9 @@ def test_that_normalized_series_renders_as_vertical_bars(values, expected):
 
 @pytest.fixture
 def capture(mocker):
-    yield mocker.patch("sparcli.capture.capture.MultiCapture", autospec=True)(None, None)
+    yield mocker.patch("sparcli.capture.capture.MultiCapture", autospec=True)(
+        None, None
+    )
 
 
 @pytest.fixture
