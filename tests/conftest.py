@@ -10,11 +10,11 @@ def pytest_sessionstart(session):
 def disable_coverage_when_not_all_tests_were_run(config):
     if not config.pluginmanager.has_plugin("_cov"):
         return
-    if config.option.collectonly:
-        config.pluginmanager.unregister(name="_cov")
-    elif config.option.file_or_dir and "tests" not in config.option.file_or_dir:
-        config.pluginmanager.unregister(name="_cov")
-    elif config.option.keyword:
+    if (
+        config.option.collectonly
+        or (config.option.file_or_dir and "tests" not in config.option.file_or_dir)
+        or (config.option.keyword or config.option.markexpr)
+    ):
         config.pluginmanager.unregister(name="_cov")
 
 

@@ -39,7 +39,7 @@ def test_that_it_can_wrap_an_iterable(mocker):
 
 def test_that_controller_is_configured(mocker):
     capture = mocker.patch("sparcli.capture.factory", autospec=True)("fd")
-    renderer = mocker.patch("sparcli.render.Renderer", autospec=True)(capture)
+    renderer = mocker.patch("sparcli.render.Renderer", autospec=True)(capture.write_out, capture)
     Controller = mocker.patch("sparcli.controller.Controller", autospec=True)
 
     _controller_factory()
@@ -59,7 +59,7 @@ def test_that_only_one_controller_can_exist(mocker):
     main = _Main(threading.Lock())
     controller = mocker.MagicMock(sparcli.controller.Controller, autospec=True)()
     mocker.patch.object(sparcli, "_controller_factory", return_value=controller)
-    cap_workarounds = mocker.patch("sparcli.capture.apply_workarounds", autospec=True)
+    cap_init = mocker.patch("sparcli.capture.init", autospec=True)
     atexit = mocker.patch("atexit.register", autospec=True)
     controller.start.side_effect = lambda: time.sleep(0.1)
 
@@ -67,7 +67,8 @@ def test_that_only_one_controller_can_exist(mocker):
 
     assert controller.start.call_count == 1
     atexit.assert_called_once_with(main.cleanup)
-    assert cap_workarounds.called
+    assert main.controller == controller
+    assert cap_init.called
 
 
 def test_that_controller_is_cleaned_up_on_exit(mocker):

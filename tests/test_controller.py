@@ -5,7 +5,7 @@ import sparcli.controller
 
 @pytest.fixture
 def renderer(mocker):
-    yield mocker.patch("sparcli.render.Renderer", autospec=True)(None)
+    yield mocker.patch("sparcli.render.Renderer", autospec=True)(None, None)
 
 
 @pytest.fixture
