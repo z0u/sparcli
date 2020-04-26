@@ -8,36 +8,36 @@ Copyright (c) 2004-2020 Holger Krekel and others
 https://github.com/pytest-dev/pytest/blob/1df593f97890245a8eaaa89444a3ba7bada2a3b0/src/_pytest/capture.py
 """
 import io
-import os
-import sys
 
-from ctypes import windll, byref, wintypes, WinError
-from ctypes.wintypes import HANDLE, DWORD, POINTER, BOOL
-import msvcrt
+from .system import ctypes, msvcrt, os, sys
+from .platform_base import Platform
 
 
-LPDWORD = POINTER(DWORD)
-PIPE_NOWAIT = wintypes.DWORD(0x00000001)
-ERROR_NO_DATA = 232
+class WindowsPlatform(Platform):
+    def set_nonblocking(self, read_fd: int):
+        lpword = ctypes.wintypes.POINTER(ctypes.wintypes.DWORD)
+        pipe_nowait = ctypes.wintypes.DWORD(0x00000001)
 
+        SetNamedPipeHandleState = ctypes.windll.kernel32.SetNamedPipeHandleState
+        SetNamedPipeHandleState.argtypes = [
+            ctypes.wintypes.HANDLE,
+            lpword,
+            lpword,
+            lpword,
+        ]
+        SetNamedPipeHandleState.restype = ctypes.wintypes.BOOL
+        handle = msvcrt.get_osfhandle(read_fd)
+        res = ctypes.windll.kernel32.SetNamedPipeHandleState(
+            handle, ctypes.byref(pipe_nowait), None, None
+        )
+        if res == 0:
+            error: IOError = ctypes.WinError()
+            raise error
 
-def set_nonblocking(read_fd: int):
-    SetNamedPipeHandleState = windll.kernel32.SetNamedPipeHandleState
-    SetNamedPipeHandleState.argtypes = [HANDLE, LPDWORD, LPDWORD, LPDWORD]
-    SetNamedPipeHandleState.restype = BOOL
-    handle = msvcrt.get_osfhandle(read_fd)
-    res = windll.kernel32.SetNamedPipeHandleState(
-        handle, byref(PIPE_NOWAIT), None, None
-    )
-    if res == 0:
-        error: IOError = WinError()
-        raise error
-
-
-def apply_workarounds(method: str):  # pragma: no-cover
-    _py36_windowsconsoleio_workaround(sys.stdout)
-    _colorama_workaround()
-    _readline_workaround()
+    def apply_workarounds(self):  # pragma: no-cover
+        _py36_windowsconsoleio_workaround(sys.stdout)
+        _colorama_workaround()
+        _readline_workaround()
 
 
 def _colorama_workaround():  # pragma: no-cover
@@ -49,11 +49,10 @@ def _colorama_workaround():  # pragma: no-cover
     first import of colorama while I/O capture is active, colorama will
     fail in various ways.
     """
-    if sys.platform.startswith("win32"):
-        try:
-            import colorama  # noqa: F401
-        except ImportError:
-            pass
+    try:
+        import colorama  # noqa: F401
+    except ImportError:
+        pass
 
 
 def _readline_workaround():  # pragma: no-cover
@@ -72,11 +71,10 @@ def _readline_workaround():  # pragma: no-cover
 
     See https://github.com/pytest-dev/pytest/pull/1281
     """
-    if sys.platform.startswith("win32"):
-        try:
-            import readline  # noqa: F401
-        except ImportError:
-            pass
+    try:
+        import readline  # noqa: F401
+    except ImportError:
+        pass
 
 
 def _py36_windowsconsoleio_workaround(stream):  # pragma: no-cover
@@ -101,11 +99,7 @@ def _py36_windowsconsoleio_workaround(stream):  # pragma: no-cover
 
     See https://github.com/pytest-dev/py/issues/103
     """
-    if (
-        not sys.platform.startswith("win32")
-        or sys.version_info[:2] < (3, 6)
-        or hasattr(sys, "pypy_version_info")
-    ):
+    if sys.version_info[:2] < (3, 6) or hasattr(sys, "pypy_version_info"):
         return
 
     # bail out if ``stream`` doesn't seem like a proper ``io`` stream (#2666)

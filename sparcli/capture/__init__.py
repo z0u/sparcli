@@ -1,21 +1,14 @@
-import os
-
 from . import capture
-
-if os.name == "nt":
-    from . import windows as platform
-elif os.name == "posix":
-    from . import posix as platform
-else:
-    platform = None
+from . import platform_posix
+from . import platform_windows
+from .system import os
 
 
 __all__ = ["init", "make_multi_capture"]
 
 
 def init():
-    if platform:
-        platform.apply_workarounds()
+    get_platform().apply_workarounds()
 
 
 def make_multi_capture(stdout: bool, stderr: bool) -> capture.MultiCapture:
@@ -27,7 +20,15 @@ def make_multi_capture(stdout: bool, stderr: bool) -> capture.MultiCapture:
 def make_capture(stream_name: str, method: str):
     file_descriptor = {"stdout": 1, "stderr": 2}[stream_name]
     if method == "pipe":
-        if not platform:
-            raise NotImplementedError(f"Can't capture {stream_name} on this platform")
-        return capture.PipeCapture(platform, file_descriptor)
-    return capture.NoCapture(file_descriptor)
+        return capture.PipeCapture(get_platform(), file_descriptor)
+    elif method == "none":
+        return capture.NoCapture(file_descriptor)
+    raise ValueError(f"No such capture method {method}")
+
+
+def get_platform():
+    if os.name == "nt":
+        return platform_windows.WindowsPlatform()
+    elif os.name == "posix":
+        return platform_posix.PosixPlatform()
+    raise NotImplementedError(f"Unsupported platform: {os.name}")

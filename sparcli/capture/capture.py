@@ -1,4 +1,4 @@
-from . import os_facade as os
+from .system import os
 
 
 class Capture:
@@ -78,7 +78,7 @@ class NoCapture(Capture):
         pass
 
     def write(self, data):
-        os.write(self.true_fd, data)
+        os.write(self.target_fd, data)
 
 
 class MultiCapture:
