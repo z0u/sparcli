@@ -14,6 +14,7 @@ def mock_system(mocker):
     patch_children(mocker, facade.os)
     patch_children(mocker, facade.sys)
 
+    facade.ctypes.WinError.return_value = OSError()
     facade.os.dup.return_value = mocker.Mock(int)
     facade.os.dup2.return_value = mocker.Mock(int)
     facade.os.pipe.return_value = (mocker.Mock(int), mocker.Mock(int))

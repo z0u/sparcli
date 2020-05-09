@@ -27,11 +27,9 @@ class WindowsPlatform(Platform):
         ]
         SetNamedPipeHandleState.restype = ctypes.wintypes.BOOL
         handle = msvcrt.get_osfhandle(read_fd)
-        res = ctypes.windll.kernel32.SetNamedPipeHandleState(
-            handle, ctypes.byref(pipe_nowait), None, None
-        )
+        res = SetNamedPipeHandleState(handle, ctypes.byref(pipe_nowait), None, None)
         if res == 0:
-            error: IOError = ctypes.WinError()
+            error: OSError = ctypes.WinError()
             raise error
 
     def apply_workarounds(self):  # pragma: no-cover
