@@ -2,6 +2,10 @@ Alex Fraser
 
 ## Unwitting contributions
 
+### From StackOverflow:
+Anatoly Techtonik
+HarryJohnston
+
 ### From pytest:
 Anthony Sottile
 Bruno Oliveira

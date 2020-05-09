@@ -33,6 +33,7 @@ def test_that_renderer_draws_variables(mocker, renderer, capture):
     renderer.draw(variables)
 
     assert render.called
+    assert capture.flush.called
     assert capture.write_out.called
     assert renderer.height == len(variables)
 

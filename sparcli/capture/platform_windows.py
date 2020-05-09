@@ -81,20 +81,20 @@ def _py36_windowsconsoleio_workaround(stream):  # pragma: no-cover
     """
     Python 3.6 implemented unicode console handling for Windows. This works
     by reading/writing to the raw console handle using
-    ``{Read,Write}ConsoleW``.
+    `ReadConsoleW` and `WriteConsoleW`.
 
-    The problem is that we are going to ``dup2`` over the stdio file
-    descriptors when doing ``RedirectCapture`` and this will ``CloseHandle`` the
+    The problem is that we are going to `dup2` over the stdio file
+    descriptors when doing `RedirectCapture` and this will `CloseHandle` the
     handles used by Python to write to the console. Though there is still some
     weirdness and the console handle seems to only be closed randomly and not
-    on the first call to ``CloseHandle``, or maybe it gets reopened with the
+    on the first call to `CloseHandle`, or maybe it gets reopened with the
     same handle value when we suspend capturing.
 
     The workaround in this case will reopen stdio with a different fd which
     also means a different handle by replicating the logic in
     "Py_lifecycle.c:initstdio/create_stdio".
 
-    :param stream: in practice ``sys.stdout`` or ``sys.stderr``, but given
+    :param stream: in practice `sys.stdout` or `sys.stderr`, but given
         here as parameter for unittesting purposes.
 
     See https://github.com/pytest-dev/py/issues/103
@@ -102,7 +102,7 @@ def _py36_windowsconsoleio_workaround(stream):  # pragma: no-cover
     if sys.version_info[:2] < (3, 6) or hasattr(sys, "pypy_version_info"):
         return
 
-    # bail out if ``stream`` doesn't seem like a proper ``io`` stream (#2666)
+    # bail out if `stream` doesn't seem like a proper `io` stream (#2666)
     if not hasattr(stream, "buffer"):
         return
 
