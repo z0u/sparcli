@@ -1,42 +1,44 @@
 """Facade over system calls to allow strict mocking."""
 import ctypes as ctypes_
-import fcntl as fcntl_
 import os as os_
 import sys as sys_
+
+try:
+    import fcntl as fcntl_
+except ImportError:
+    fcntl_ = None
 
 try:
     import msvcrt as msvcrt_
 except ImportError:
     msvcrt_ = None
 
+try:
+    import ctypes.wintypes
+except ImportError:
+    pass
+
 
 class ctypes:
     byref = ctypes_.byref
-    try:
-        WinError = ctypes_.WinError
-        windll = ctypes_.windll
-        wintypes = ctypes_.wintypes
-    except AttributeError:
-        WinError = None
-        windll = None
-        wintypes = None
+    POINTER = getattr(ctypes_, "POINTER", None)
+    WinError = getattr(ctypes_, "WinError", None)
+    windll = getattr(ctypes_, "windll", None)
+    wintypes = getattr(ctypes_, "wintypes", None)
 
 
 class fcntl:
-    fcntl = fcntl_.fcntl
-    F_GETFL = fcntl_.F_GETFL
-    F_SETFL = fcntl_.F_SETFL
+    fcntl = getattr(fcntl_, "fcntl", None)
+    F_GETFL = getattr(fcntl_, "F_GETFL", None)
+    F_SETFL = getattr(fcntl_, "F_SETFL", None)
 
 
 class msvcrt:
-    if msvcrt_:
-        get_osfhandle = msvcrt_.get_osfhandle
-    else:
-        get_osfhandle = None
+    get_osfhandle = getattr(msvcrt_, "get_osfhandle", None)
 
 
 class os:
-    O_NONBLOCK = os_.O_NONBLOCK
+    O_NONBLOCK = getattr(os_, "O_NONBLOCK", None)
     close = os_.close
     dup = os_.dup
     dup2 = os_.dup2

@@ -62,13 +62,18 @@ def test_that_only_one_controller_can_exist(mocker):
     controller = mocker.MagicMock(sparcli.controller.Controller, autospec=True)()
     mocker.patch.object(sparcli, "_controller_factory", return_value=controller)
     cap_init = mocker.patch("sparcli.capture.init", autospec=True)
-    atexit = mocker.patch("atexit.register", autospec=True)
+    atexit_reg = mocker.patch("atexit.register", autospec=True)
     controller.start.side_effect = lambda: time.sleep(0.1)
 
     run_concurrently(main.get_controller, 2)
 
     assert controller.start.call_count == 1
-    atexit.assert_called_once_with(main.cleanup)
+    cleanup_calls = [
+        (args, kwargs)
+        for args, kwargs in atexit_reg.call_args_list
+        if main.cleanup in args
+    ]
+    assert len(cleanup_calls) == 1
     assert main.controller == controller
     assert cap_init.called
 

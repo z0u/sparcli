@@ -15,7 +15,7 @@ from .platform_base import Platform
 
 class WindowsPlatform(Platform):
     def set_nonblocking(self, read_fd: int):
-        lpword = ctypes.wintypes.POINTER(ctypes.wintypes.DWORD)
+        lpword = ctypes.POINTER(ctypes.wintypes.DWORD)
         pipe_nowait = ctypes.wintypes.DWORD(0x00000001)
 
         SetNamedPipeHandleState = ctypes.windll.kernel32.SetNamedPipeHandleState
