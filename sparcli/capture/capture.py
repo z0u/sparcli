@@ -61,6 +61,8 @@ class PipeCapture(Capture):
             os.write(self.true_fd, data)
 
     def write(self, data):
+        if isinstance(data, str):
+            data = data.encode("utf8")
         os.write(self.true_fd, data)
 
 
@@ -86,6 +88,13 @@ class MultiCapture:
         self.out_cap = out_cap
         self.err_cap = err_cap
 
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
     def start(self):
         self.out_cap.start()
         self.err_cap.start()
@@ -99,4 +108,7 @@ class MultiCapture:
         self.err_cap.flush()
 
     def write_out(self, data):
-        self.out_cap.write(data.encode("utf8"))
+        self.out_cap.write(data)
+
+    def write_err(self, data):
+        self.err_cap.write(data)
