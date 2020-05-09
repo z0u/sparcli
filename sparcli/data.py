@@ -29,7 +29,7 @@ class CompactingSeries:
         if self.head.size == 0:
             return np.copy(self.tail)
         head = self.head.mean
-        if self.tail.size != 0:
+        if self.tail.size > 0:
             values = [self.tail[-1], head]
             weights = [self.scale, self.head.size]
             head = np.average(values, weights=weights)
@@ -37,15 +37,20 @@ class CompactingSeries:
 
     def add(self, value):
         self.head.add(value)
-        if self.head.size == self.scale:
-            self.tail = np.append(self.tail, self.head.mean)
-            self.head.__init__()
-            if self.tail.size == self.max_size:
-                self.tail = compact(self.tail)
-                self.scale *= 2
+        if self.head.size < self.scale:
+            return
+        self.tail = np.append(self.tail, self.head.mean)
+        self.head.empty()
+        if self.tail.size < self.max_size:
+            return
+        self.tail = compact(self.tail)
+        self.scale *= 2
 
 
 class StableBucket:
+    mean: float
+    size: int
+
     def __init__(self, mean: float = 0.0, size: int = 0):
         self.mean = mean
         self.size = size
@@ -54,3 +59,7 @@ class StableBucket:
         size = self.size + 1
         self.mean = self.mean + (value - self.mean) / size
         self.size = size
+
+    def empty(self):
+        self.mean = 0.0
+        self.size = 0
