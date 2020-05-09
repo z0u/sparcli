@@ -22,7 +22,8 @@ test:
 lint:
 	poetry run black --check --diff sparcli tests
 	poetry run flake8 sparcli tests
-	find . -iname '*.yml' -o -iname '*.yaml' | xargs poetry run yamllint
+	bash -c "find . -not \( -path .git -prune \) -iname '*.yml' -o -iname '*.yaml' \
+		| xargs poetry run yamllint"
 
 scan:
 	poetry run safety check
