@@ -80,6 +80,7 @@ jobs:
           bash ./.github/workflows/install-poetry.sh
       - name: Install dependencies
         run: |
+          echo "$PATH"
           make init
       - name: Build
         run: |
