@@ -26,6 +26,7 @@ jobs:
           bash ./.github/workflows/install-poetry.sh
       - name: Install dependencies
         run: |
+          echo "$PATH"
           make init
       - name: Run tests
         timeout-minutes: 5
@@ -80,7 +81,6 @@ jobs:
           bash ./.github/workflows/install-poetry.sh
       - name: Install dependencies
         run: |
-          echo "$PATH"
           make init
       - name: Build
         run: |
