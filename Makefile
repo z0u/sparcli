@@ -13,7 +13,7 @@ all:
 	@make build
 
 init:
-	poetry run pip install --upgrade pip setuptools
+	poetry run pip install --user --upgrade pip setuptools
 	poetry install
 
 test:

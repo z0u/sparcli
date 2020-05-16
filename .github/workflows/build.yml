@@ -23,9 +23,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install base
         run: |
-          python -m pip install pipx
-          python -m pipx install poetry
-          echo "::add-path::$HOME/.local/bin"
+          bash ./.github/workflows/install-poetry.sh
       - name: Install dependencies
         run: |
           make init
@@ -43,9 +41,7 @@ jobs:
           python-version: '3.8'
       - name: Install base
         run: |
-          python -m pip install pipx
-          python -m pipx install poetry
-          echo "::add-path::$HOME/.local/bin"
+          bash ./.github/workflows/install-poetry.sh
       - name: Install dependencies
         run: |
           make init
@@ -62,9 +58,7 @@ jobs:
           python-version: '3.8'
       - name: Install base
         run: |
-          python -m pip install pipx
-          python -m pipx install poetry
-          echo "::add-path::$HOME/.local/bin"
+          bash ./.github/workflows/install-poetry.sh
       - name: Install dependencies
         run: |
           make init
@@ -83,9 +77,7 @@ jobs:
           python-version: '3.8'
       - name: Install base
         run: |
-          python -m pip install pipx
-          python -m pipx install poetry
-          echo "::add-path::$HOME/.local/bin"
+          bash ./.github/workflows/install-poetry.sh
       - name: Install dependencies
         run: |
           make init
