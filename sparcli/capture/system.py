@@ -10,6 +10,7 @@ if os_.name == "nt":
     import msvcrt as msvcrt_
 else:
     import fcntl as fcntl_
+
     msvcrt_ = None
 
 
