@@ -3,20 +3,14 @@ import ctypes as ctypes_
 import os as os_
 import sys as sys_
 
-try:
-    import fcntl as fcntl_
-except ImportError:
+
+if os_.name == "nt":
     fcntl_ = None
-
-try:
-    import msvcrt as msvcrt_
-except ImportError:
-    msvcrt_ = None
-
-try:
     import ctypes.wintypes
-except ImportError:
-    pass
+    import msvcrt as msvcrt_
+else:
+    import fcntl as fcntl_
+    msvcrt_ = None
 
 
 class ctypes:
