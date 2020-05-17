@@ -1,18 +1,32 @@
 import numpy as np
 
 
+NAN = float("nan")
+INF = float("inf")
+
+
 def normalize(series: np.ndarray) -> np.ndarray:
-    if series.size == 0:
-        return np.array([], dtype=np.float32)
-    rebased = series - series.min()
+    series = series.astype("float")
+    input_is_finite = np.isfinite(series)
+    rebased = series - series.min(initial=INF, where=input_is_finite)
+    rebased_max = rebased.max(initial=-INF, where=input_is_finite)
     with np.errstate(divide="ignore", invalid="ignore"):
-        scaled = np.true_divide(rebased, rebased.max())
-        scaled[~np.isfinite(scaled)] = 0
+        scaled = np.true_divide(rebased, rebased_max)
+    output_is_finite = np.isfinite(scaled)
+    scaled[~output_is_finite] = 0.0
+    scaled[~input_is_finite] = NAN
     return scaled
 
 
 def compact(values: np.ndarray) -> np.ndarray:
-    return np.stack([values[1::2], values[:-1:2]]).mean(axis=0)
+    values = values.copy()
+    odds = values[1::2]
+    evens = values[:-1:2]
+    nans = ~np.isfinite(odds)
+    odds[nans] = evens[nans]
+    nans = ~np.isfinite(evens)
+    evens[nans] = odds[nans]
+    return np.stack([odds, evens]).mean(axis=0)
 
 
 class CompactingSeries:
@@ -57,18 +71,21 @@ class CompactingSeries:
 
 
 class StableBucket:
-    mean: float
-    size: int
-
-    def __init__(self, mean: float = 0.0, size: int = 0):
-        self.mean = mean
-        self.size = size
+    def __init__(self):
+        self.mean = NAN
+        self.size = 0
+        self.real_size = 0
 
     def add(self, value):
-        size = self.size + 1
-        self.mean = self.mean + (value - self.mean) / size
-        self.size = size
+        self.size += 1
+        if not np.isfinite(value):
+            pass
+        elif not np.isfinite(self.mean):
+            self.real_size += 1
+            self.mean = value
+        else:
+            self.real_size += 1
+            self.mean = self.mean + (value - self.mean) / self.real_size
 
     def empty(self):
-        self.mean = 0.0
-        self.size = 0
+        self.__init__()

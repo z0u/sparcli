@@ -10,6 +10,7 @@ import numpy as np
 import sparcli
 
 
+NAN = float("nan")
 running = True
 
 
@@ -43,6 +44,8 @@ def context_manager():
     with sparcli.ctx() as context:
         while running:
             y = random.random()
+            if y < 0.5:
+                y = NAN
             context.record(random=y)
             print(f"random: {y:+0.3f} (stdout)")
             time.sleep(0.1)

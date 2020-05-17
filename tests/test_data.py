@@ -3,18 +3,37 @@ import pytest
 
 import sparcli.data
 
+NAN = float("nan")
+INF = float("inf")
+
 
 @pytest.mark.parametrize(
-    "values,expected", [([], []), ([0], [0]), ([-1, 0, 1], [0, 0.5, 1]),]
+    "values,expected",
+    [
+        ([], []),
+        ([0], [0]),
+        ([500, 220.1], [1, 0]),
+        ([-1, 0, 1], [0, 0.5, 1]),
+        ([NAN], [NAN]),
+        ([INF], [NAN]),
+        ([-INF], [NAN]),
+        ([0, NAN, 1, INF, 2, -INF], [0, NAN, 0.5, NAN, 1, NAN]),
+    ],
 )
 def test_that_data_can_be_normalized(values, expected):
     values = np.array(values)
+    expected = np.array(expected)
+
     output = sparcli.data.normalize(values)
-    assert np.allclose(expected, output)
+
+    reals = np.isfinite(expected)
+    assert np.all(np.isfinite(expected) == np.isfinite(output))
+    assert np.allclose(expected[reals], output[reals])
 
 
 @pytest.mark.parametrize(
-    "values,expected", [([], []), ([1, 2, 3, 4], [1.5, 3.5]),],
+    "values,expected",
+    [([], []), ([1, 2, 3, 4], [1.5, 3.5]), ([NAN, 2, INF, 4, 6, -INF], [2, 4, 6])],
 )
 def test_that_series_can_be_compacted(values, expected):
     values = np.array(values)
@@ -56,7 +75,7 @@ def test_that_series_automatically_truncates(in_values, out_values):
 
 @pytest.mark.parametrize(
     "in_values,expected_tail,out_values",
-    [([], [], []), ([1], [1], [1]), ([1, 2, 3], [1.5], [2])],
+    [([], [], []), ([1], [1], [1]), ([1, 2, 3], [1.5], [2]), ([1, NAN, 4], [1], [2])],
 )
 def test_that_weighted_head_value_is_included_in_values(
     in_values, expected_tail, out_values
@@ -72,7 +91,8 @@ def test_that_weighted_head_value_is_included_in_values(
 
 
 @pytest.mark.parametrize(
-    "values,expected", [([1, 2, 3], 2.0), (range(1, 1000000), 500000),],
+    "values,expected",
+    [([1, 2, 3], 2.0), (range(1, 1000000), 500000), ([1, NAN, 3], 2), ([INF, 3], 3)],
 )
 def test_that_mean_calculation_is_reasonably_stable(values, expected):
     values = (float(x) for x in values)

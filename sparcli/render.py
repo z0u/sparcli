@@ -3,12 +3,18 @@ import numpy as np
 import sparcli.data
 
 
-COLUMNS = np.array([c for c in "▁▂▃▄▅▆▇█"])
+COLUMNS = np.array([c for c in " ▁▂▃▄▅▆▇█"])
 
 
 def render_as_vertical_bars(normalized_series: np.ndarray) -> str:
-    upper_index = len(COLUMNS) - 1
-    indices = (normalized_series * upper_index).astype(int).clip(0, upper_index)
+    """
+    Convert a series with values between 0 and 1 into a chart. Values that are less
+    than 0 will be rendered as blank space.
+    """
+    # astype(int).clip implicitly converts NaN values to bottom of range.
+    upper_index = len(COLUMNS) - 2
+    texture_coordinates = (normalized_series * upper_index) + 1
+    indices = texture_coordinates.astype(int).clip(0, upper_index + 1)
     return "".join(COLUMNS[indices])
 
 
