@@ -42,18 +42,33 @@ def test_that_series_automatically_compacts(values, expected, scale):
     assert np.allclose(expected, series.values)
 
 
-def test_that_weighted_head_value_is_included_in_values():
-    series = sparcli.data.CompactingSeries(4)
-    for value in [1, 2, 3, 4, 5]:
+@pytest.mark.parametrize(
+    "in_values,out_values", [([1, 2, 3, 4], [2, 3, 4])],
+)
+def test_that_series_automatically_truncates(in_values, out_values):
+    series = sparcli.data.CompactingSeries(4, 1)
+
+    for value in in_values:
+        series.add(value)
+
+    assert np.allclose(out_values, series.values)
+
+
+@pytest.mark.parametrize(
+    "in_values,expected_tail,out_values",
+    [([], [], []), ([1], [1], [1]), ([1, 2, 3], [1.5], [2])],
+)
+def test_that_weighted_head_value_is_included_in_values(
+    in_values, expected_tail, out_values
+):
+    series = sparcli.data.CompactingSeries(2)
+    for value in in_values:
         series.add(value)
 
     values = series.values
 
-    assert series.scale == 2
-    assert series.head.size == 1
-    assert series.head.mean == 5
-    expected = [1.5, 3.5] + [sum([3.5, 3.5, 5]) / 3]
-    assert np.allclose(expected, values)
+    assert np.allclose(expected_tail, series.tail)
+    assert np.allclose(out_values, values)
 
 
 @pytest.mark.parametrize(

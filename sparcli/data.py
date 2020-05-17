@@ -16,11 +16,15 @@ def compact(values: np.ndarray) -> np.ndarray:
 
 
 class CompactingSeries:
-    def __init__(self, max_size: int):
+    def __init__(self, max_size: int, max_scale: int = 1000, initial_scale: int = 1):
         if max_size < 2 or max_size % 2 != 0:
             raise ValueError("max_size must be a multiple of 2")
+        if not max_scale > 0:  # pragma: no-cover
+            raise ValueError("max_scale must be positive")
         self.max_size = max_size
-        self.scale = 1
+        self.max_scale = max_scale
+        self.scale = initial_scale
+        self.scale_exp = 1 << (initial_scale - 1)
         self.head = StableBucket()
         self.tail = np.array([], dtype=np.float32)
 
@@ -28,23 +32,28 @@ class CompactingSeries:
     def values(self):
         if self.head.size == 0:
             return np.copy(self.tail)
-        head = self.head.mean
-        if self.tail.size > 0:
-            values = [self.tail[-1], head]
-            weights = [self.scale, self.head.size]
-            head = np.average(values, weights=weights)
-        return np.append(self.tail, head)
+        return np.append(self.tail, self.weighted_head)[-self.max_size + 1 :]
+
+    @property
+    def weighted_head(self):
+        values = [self.tail[-1], self.head.mean]
+        weights = [self.scale_exp, self.head.size]
+        return np.average(values, weights=weights)
 
     def add(self, value):
         self.head.add(value)
-        if self.head.size < self.scale:
+        if self.head.size < self.scale_exp:
             return
         self.tail = np.append(self.tail, self.head.mean)
         self.head.empty()
         if self.tail.size < self.max_size:
             return
-        self.tail = compact(self.tail)
-        self.scale *= 2
+        if self.scale < self.max_scale:
+            self.tail = compact(self.tail)
+            self.scale += 1
+            self.scale_exp = 1 << (self.scale - 1)
+        else:
+            self.tail = self.tail[1:]
 
 
 class StableBucket:
