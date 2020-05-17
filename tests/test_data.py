@@ -20,25 +20,23 @@ INF = float("inf")
         ([0, NAN, 1, INF, 2, -INF], [0, NAN, 0.5, NAN, 1, NAN]),
     ],
 )
-def test_that_data_can_be_normalized(values, expected):
+def test_that_data_can_be_normalized(values, expected, allclose):
     values = np.array(values)
     expected = np.array(expected)
 
     output = sparcli.data.normalize(values)
 
-    reals = np.isfinite(expected)
-    assert np.all(np.isfinite(expected) == np.isfinite(output))
-    assert np.allclose(expected[reals], output[reals])
+    assert allclose(expected, output)
 
 
 @pytest.mark.parametrize(
     "values,expected",
     [([], []), ([1, 2, 3, 4], [1.5, 3.5]), ([NAN, 2, INF, 4, 6, -INF], [2, 4, 6])],
 )
-def test_that_series_can_be_compacted(values, expected):
+def test_that_series_can_be_compacted(values, expected, allclose):
     values = np.array(values)
     output = sparcli.data.compact(values)
-    assert np.allclose(expected, output)
+    assert allclose(expected, output)
 
 
 @pytest.mark.parametrize("max_size", [0, 1, 3])
@@ -51,26 +49,26 @@ def test_that_compacting_series_checks_for_max_size_constraints(max_size):
 @pytest.mark.parametrize(
     "values,expected,scale", [([1], [1], 1), ([1, 2, 3, 4], [1.5, 3.5], 2),],
 )
-def test_that_series_automatically_compacts(values, expected, scale):
+def test_that_series_automatically_compacts(values, expected, scale, allclose):
     series = sparcli.data.CompactingSeries(4)
 
     for value in values:
         series.add(value)
 
     assert scale == series.scale
-    assert np.allclose(expected, series.values)
+    assert allclose(expected, series.values)
 
 
 @pytest.mark.parametrize(
     "in_values,out_values", [([1, 2, 3, 4], [2, 3, 4])],
 )
-def test_that_series_automatically_truncates(in_values, out_values):
+def test_that_series_automatically_truncates(in_values, out_values, allclose):
     series = sparcli.data.CompactingSeries(4, 1)
 
     for value in in_values:
         series.add(value)
 
-    assert np.allclose(out_values, series.values)
+    assert allclose(out_values, series.values)
 
 
 @pytest.mark.parametrize(
@@ -78,7 +76,7 @@ def test_that_series_automatically_truncates(in_values, out_values):
     [([], [], []), ([1], [1], [1]), ([1, 2, 3], [1.5], [2]), ([1, NAN, 4], [1], [2])],
 )
 def test_that_weighted_head_value_is_included_in_values(
-    in_values, expected_tail, out_values
+    in_values, expected_tail, out_values, allclose
 ):
     series = sparcli.data.CompactingSeries(2)
     for value in in_values:
@@ -86,8 +84,8 @@ def test_that_weighted_head_value_is_included_in_values(
 
     values = series.values
 
-    assert np.allclose(expected_tail, series.tail)
-    assert np.allclose(out_values, values)
+    assert allclose(expected_tail, series.tail)
+    assert allclose(out_values, values)
 
 
 @pytest.mark.parametrize(

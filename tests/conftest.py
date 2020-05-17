@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 
@@ -40,3 +41,17 @@ def effector():
         return materialize
 
     return effector_
+
+
+@pytest.fixture
+def allclose():
+    def allclose(expected, actual):
+        expected = np.array(expected)
+        actual = np.array(actual)
+        if len(expected) != len(actual):
+            return False
+        if not np.all(np.isfinite(expected) == np.isfinite(actual)):
+            return False
+        return np.allclose(expected[np.isfinite(expected)], actual[np.isfinite(actual)])
+
+    return allclose

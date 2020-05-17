@@ -1,9 +1,12 @@
+import shutil
+
 import numpy as np
 
 import sparcli.data
 
 
 COLUMNS = np.array([c for c in " ▁▂▃▄▅▆▇█"])
+NAN = float("nan")
 
 
 def render_as_vertical_bars(normalized_series: np.ndarray) -> str:
@@ -16,6 +19,17 @@ def render_as_vertical_bars(normalized_series: np.ndarray) -> str:
     texture_coordinates = (normalized_series * upper_index) + 1
     indices = texture_coordinates.astype(int).clip(0, upper_index + 1)
     return "".join(COLUMNS[indices])
+
+
+def resample(series: np.ndarray, width: int) -> np.ndarray:
+    if series.size == 0:
+        series = np.array([NAN], dtype=float)
+    if series.size > width:
+        sample_coords = np.linspace(0, series.size - 1, width, dtype=float)
+    else:
+        sample_coords = np.arange(width, dtype=float)
+    xcoords = np.arange(series.size, dtype=float)
+    return np.interp(sample_coords, xcoords, series, right=NAN)
 
 
 # Escape sequences
@@ -43,9 +57,12 @@ class Renderer:
     def draw(self, variables):
         self.clear()
         self.capture.flush()
+        viewport_size = shutil.get_terminal_size()
         name_width = max((len(name) for name in variables), default=0)
+        chart_width = viewport_size.columns - name_width - 1
         for name, variable in variables.items():
             values = sparcli.data.normalize(variable.series.values)
+            values = resample(values, chart_width)
             name = name.rjust(name_width)
             bars = render_as_vertical_bars(values)
             self.write(f"{name} {bars}\n")

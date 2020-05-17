@@ -66,7 +66,7 @@ class Controller(threading.Thread):
 class Variable:
     def __init__(self):
         self.references = set()
-        self._series = sparcli.data.CompactingSeries(30, 1000, 1)
+        self._series = sparcli.data.CompactingSeries(300, 1000, 1)
 
     @property
     def series(self):
